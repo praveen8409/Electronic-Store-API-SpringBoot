@@ -1,8 +1,10 @@
 package com.lcwd.electronic.store.services.impl;
 
+import com.lcwd.electronic.store.dtos.PageableResponse;
 import com.lcwd.electronic.store.dtos.UserDto;
 import com.lcwd.electronic.store.entities.User;
 import com.lcwd.electronic.store.exceptions.ResourceNotFoundExceptions;
+import com.lcwd.electronic.store.helper.Helper;
 import com.lcwd.electronic.store.repositories.UserRepository;
 import com.lcwd.electronic.store.services.UserService;
 import org.modelmapper.ModelMapper;
@@ -31,8 +33,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto createUser(UserDto userDto) {
         //  Auto-generated userId
-       String userId = UUID.randomUUID().toString();
-       userDto.setUserId(userId);
+        String userId = UUID.randomUUID().toString();
+        userDto.setUserId(userId);
         //DTO -> Entity
         User user = dtoToEntity(userDto);
         User savedUser = userRepository.save(user);
@@ -43,38 +45,35 @@ public class UserServiceImpl implements UserService {
     }
 
 
-
     @Override
     public UserDto updateUser(UserDto userDto, String userId) {
-      User user =  userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundExceptions("User not found with id " + userId));
-      user.setName(userDto.getName());
-      user.setGender(userDto.getGender());
-      user.setPassword(userDto.getPassword());
-      user.setAbout(userDto.getAbout());
-      user.setImageName(userDto.getImageName());
-      User updatedUser = userRepository.save(user);
-      UserDto updatedUserDto = entityToDto(updatedUser);
-       return updatedUserDto;
+        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundExceptions("User not found with id " + userId));
+        user.setName(userDto.getName());
+        user.setGender(userDto.getGender());
+        user.setPassword(userDto.getPassword());
+        user.setAbout(userDto.getAbout());
+        user.setImageName(userDto.getImageName());
+        User updatedUser = userRepository.save(user);
+        UserDto updatedUserDto = entityToDto(updatedUser);
+        return updatedUserDto;
     }
 
     @Override
     public void deleteUser(String userId) {
-        User user =  userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundExceptions("User not found with id " + userId));
+        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundExceptions("User not found with id " + userId));
         userRepository.delete(user);
     }
 
     @Override
-    public List<UserDto> getAllUsers(int pageNumber, int pageSize, String sortBy, String sortDir) {
-
+    public PageableResponse<UserDto> getAllUsers(int pageNumber, int pageSize, String sortBy, String sortDir) {
 
         Sort sort = (sortDir.equalsIgnoreCase("desc")) ? (Sort.by(sortBy).descending()) : (Sort.by(sortBy).ascending());
-        Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
-         Page<User> page =  userRepository.findAll(pageable);
-         List<User> userList = page.getContent();
+        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, sort);
+        Page<User> page = userRepository.findAll(pageable);
+        List<User> userList = page.getContent();
 
-       List<UserDto> userDtoList = userList.stream().map(user -> entityToDto(user)).collect(Collectors.toList());
-
-        return userDtoList;
+        PageableResponse<UserDto> response = Helper.getPageableResponse(page, UserDto.class);
+        return response;
     }
 
     @Override
