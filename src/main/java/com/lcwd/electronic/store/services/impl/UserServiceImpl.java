@@ -4,6 +4,7 @@ import com.lcwd.electronic.store.dtos.UserDto;
 import com.lcwd.electronic.store.entities.User;
 import com.lcwd.electronic.store.repositories.UserRepository;
 import com.lcwd.electronic.store.services.UserService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -15,6 +16,11 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private ModelMapper mapper;
+
+
     @Override
     public UserDto createUser(UserDto userDto) {
         //  Auto-generated userId
@@ -81,25 +87,25 @@ public class UserServiceImpl implements UserService {
 
     private UserDto entityToDto(User savedUser) {
 
-        UserDto userDto = UserDto.builder()
-                .userId(savedUser.getUserId())
-                .email(savedUser.getEmail())
-                .password(savedUser.getPassword())
-                .about(savedUser.getAbout())
-                .imageName(savedUser.getImageName())
-                .build();
+//        UserDto userDto = UserDto.builder()
+//                .userId(savedUser.getUserId())
+//                .email(savedUser.getEmail())
+//                .password(savedUser.getPassword())
+//                .about(savedUser.getAbout())
+//                .imageName(savedUser.getImageName())
+//                .build();
 
-        return userDto;
+        return mapper.map(savedUser, UserDto.class);
     }
 
     private User dtoToEntity(UserDto userDto) {
-        User user = User.builder()
-                .userId(userDto.getUserId())
-                .email(userDto.getEmail())
-                .password(userDto.getPassword())
-                .about(userDto.getAbout())
-                .imageName(userDto.getImageName())
-                .build();
-        return user;
+//        User user = User.builder()
+//                .userId(userDto.getUserId())
+//                .email(userDto.getEmail())
+//                .password(userDto.getPassword())
+//                .about(userDto.getAbout())
+//                .imageName(userDto.getImageName())
+//                .build();
+        return mapper.map(userDto, User.class);
     }
 }
