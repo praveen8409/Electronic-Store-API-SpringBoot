@@ -36,6 +36,7 @@ public class FileServiceImpl implements FileService {
             }
             // Upload file
             Files.copy(file.getInputStream(), Paths.get(fullPathWithFilename));
+            logger.info("FullFileName : {}", fullPathWithFilename);
             return fileNameWithExtension;
         } else {
             throw new BadApiRequestException("File with this " + extension + " not allowed");
@@ -44,7 +45,7 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public InputStream getFile(String path, String name) throws FileNotFoundException {
+    public InputStream getResource(String path, String name) throws FileNotFoundException {
         String fullPath = path + File.separator + name;
         InputStream inputStream = new FileInputStream(fullPath);
         return inputStream;
