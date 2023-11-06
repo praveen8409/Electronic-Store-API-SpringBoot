@@ -113,7 +113,6 @@ public class UserController {
     }
 
     //serve user image
-
     @GetMapping(value = "/image/{userId}")
     public void serveUserImage(@PathVariable String userId, HttpServletResponse response) throws IOException {
         UserDto user = userService.getUserById(userId);

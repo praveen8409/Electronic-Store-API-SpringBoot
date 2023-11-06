@@ -37,6 +37,7 @@ public class FileServiceImpl implements FileService {
             // Upload file
             Files.copy(file.getInputStream(), Paths.get(fullPathWithFilename));
             logger.info("FullFileName : {}", fullPathWithFilename);
+            logger.info("fileNameWithExtension : {}", fileNameWithExtension);
             return fileNameWithExtension;
         } else {
             throw new BadApiRequestException("File with this " + extension + " not allowed");
