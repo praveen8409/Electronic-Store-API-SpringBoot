@@ -9,6 +9,7 @@ import com.lcwd.electronic.store.repositories.ProductRepository;
 import com.lcwd.electronic.store.services.ProductService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +17,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -28,6 +34,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Autowired
     private ModelMapper mapper;
+
+    @Value("${product.image.path}")
+    private String imagePath;
 
 
     @Override
@@ -61,6 +70,20 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void delete(String productId) {
         Product product = productRepository.findById(productId).orElseThrow(() -> new ResourceNotFoundExceptions("Product not found with given id: " + productId));
+
+        //delete product image
+        //images/products/abc.png
+        String fullPath = imagePath + product.getProductImageName();
+
+        try {
+            Path path = Paths.get(fullPath);
+            Files.delete(path);
+        } catch (NoSuchFileException ex) {
+//            logger.info("User image not found in folder");
+            ex.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         productRepository.delete(product);
     }
 
