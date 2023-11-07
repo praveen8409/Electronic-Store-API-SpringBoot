@@ -1,6 +1,5 @@
 package com.lcwd.electronic.store.dtos;
 
-
 import lombok.*;
 
 @Getter
@@ -8,12 +7,8 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CartItemDto {
+public class AddItemToCartRequest {
 
-
-    private int cartItemId;
-    private ProductDto product;
+    private String productId;
     private int quantity;
-    private int totalPrice;
-
 }

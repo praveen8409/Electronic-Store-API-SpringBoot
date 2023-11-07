@@ -148,7 +148,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDto updateCategory(String productId, String categoryId) {
-        Product product = productRepository.findById(categoryId).orElseThrow(() -> new ResourceNotFoundExceptions("Category is not found with given Product ID"));
+        Product product = productRepository.findById(productId).orElseThrow(() -> new ResourceNotFoundExceptions("Product is not found with given Product ID"));
         Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new ResourceNotFoundExceptions("Category is not found with given Category ID"));
         product.setCategory(category);
         Product savedProduct = productRepository.save(product);
