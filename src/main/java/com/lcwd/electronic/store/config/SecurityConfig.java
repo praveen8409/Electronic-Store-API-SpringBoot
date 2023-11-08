@@ -63,6 +63,8 @@ public class SecurityConfig {
                 .authorizeRequests()
                 .antMatchers("/auth/login")
                 .permitAll()
+                .antMatchers("/auth/google")
+                .permitAll()
                 .antMatchers(HttpMethod.POST,"/users/")
                 .permitAll()
                 .antMatchers(HttpMethod.DELETE, "/users/**").hasRole("ADMIN")

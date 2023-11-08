@@ -140,6 +140,11 @@ public class UserServiceImpl implements UserService {
         return dtoList;
     }
 
+    @Override
+    public Optional<User> findUserByEmailOptional(String email) {
+        return userRepository.findByEmail(email);
+    }
+
 
     private UserDto entityToDto(User savedUser) {
 
