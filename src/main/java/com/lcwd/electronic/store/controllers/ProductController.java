@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,6 +36,7 @@ public class ProductController {
 
     Logger logger = LoggerFactory.getLogger(ProductController.class);
     // Create
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<ProductDto> create(@RequestBody ProductDto productDto) {
         ProductDto productDto1 = productService.create(productDto);
@@ -42,6 +44,7 @@ public class ProductController {
     }
 
     //Update
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{productId}")
     public ResponseEntity<ProductDto> update(@PathVariable String productId, @RequestBody ProductDto productDto) {
         ProductDto updateProductDto = productService.update(productDto, productId);
@@ -99,6 +102,7 @@ public class ProductController {
     }
 
     // Upload product image
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/image/{productId}")
     public ResponseEntity<ImageResponse> uploadProductImage(
             @PathVariable String productId,

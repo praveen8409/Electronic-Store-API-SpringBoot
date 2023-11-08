@@ -6,6 +6,7 @@ import com.lcwd.electronic.store.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -19,6 +20,7 @@ public class CategoryController {
     private ProductService productService;
 
     // Create
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<CategoryDto> create(@RequestBody CategoryDto categoryDto) {
 
@@ -27,6 +29,7 @@ public class CategoryController {
     }
 
     // update
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{categoryId}")
     public ResponseEntity<CategoryDto> updateCategory(@PathVariable String categoryId, @RequestBody CategoryDto categoryDto) {
         CategoryDto updated = categoryService.update(categoryDto, categoryId);
@@ -34,6 +37,7 @@ public class CategoryController {
     }
 
     // delete
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{categoryId}")
     public ResponseEntity<ApiResponseMessage> deleteCategory(@PathVariable String categoryId) {
         categoryService.delete(categoryId);
