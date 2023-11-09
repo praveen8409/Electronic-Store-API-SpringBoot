@@ -3,6 +3,10 @@ package com.lcwd.electronic.store.controllers;
 import com.lcwd.electronic.store.dtos.*;
 import com.lcwd.electronic.store.services.FileService;
 import com.lcwd.electronic.store.services.ProductService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +26,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/products")
+@Api(value = "ProductController", description = "REST APIs related to perform product operations !!")
 public class ProductController {
 
     @Autowired
@@ -38,6 +43,12 @@ public class ProductController {
     // Create
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
+    @ApiOperation(value = "Add a new new Product !!")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Success | OK"),
+            @ApiResponse(code = 401, message = "not authorized !!"),
+            @ApiResponse(code = 201, message = "new user created !!")
+    })
     public ResponseEntity<ProductDto> create(@RequestBody ProductDto productDto) {
         ProductDto productDto1 = productService.create(productDto);
         return new ResponseEntity<>(productDto1, HttpStatus.CREATED);
@@ -46,6 +57,7 @@ public class ProductController {
     //Update
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{productId}")
+    @ApiOperation(value = "Update single product details by productId!! || Only Admin can update product !!")
     public ResponseEntity<ProductDto> update(@PathVariable String productId, @RequestBody ProductDto productDto) {
         ProductDto updateProductDto = productService.update(productDto, productId);
         return new ResponseEntity<>(updateProductDto, HttpStatus.OK);
@@ -53,6 +65,7 @@ public class ProductController {
 
     //Get All
     @GetMapping
+    @ApiOperation(value = "Get all Products !!")
     public ResponseEntity<PageableResponse<ProductDto>> getAll(
             @RequestParam(value = "pageNumber", defaultValue = "1", required = false) int pageNumber,
             @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize,
@@ -65,6 +78,7 @@ public class ProductController {
 
     // Get single Product
     @GetMapping("/{productId}")
+    @ApiOperation(value = "Get single Product by productId !!")
     public ResponseEntity<ProductDto> getProductById(@PathVariable String productId) {
         ProductDto productDto = productService.get(productId);
         return new ResponseEntity<>(productDto, HttpStatus.OK);
@@ -72,6 +86,7 @@ public class ProductController {
 
     // Delete Product
     @DeleteMapping("/{productId}")
+    @ApiOperation(value = "Delete single Product by productId !!")
     public ResponseEntity<ApiResponseMessage> deleteProductById(@PathVariable String productId) {
         productService.delete(productId);
         ApiResponseMessage responseMessage = ApiResponseMessage.builder().message("Product delete successfully").status(HttpStatus.OK).success(true).build();
@@ -79,6 +94,7 @@ public class ProductController {
     }
 
     @GetMapping("/live")
+    @ApiOperation(value = "Get all live products !!")
     public ResponseEntity<PageableResponse<ProductDto>> getAllLive(
             @RequestParam(value = "pageNumber", defaultValue = "1", required = false) int pageNumber,
             @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize,
@@ -90,6 +106,7 @@ public class ProductController {
     }
 
     @GetMapping("/search/{query}")
+    @ApiOperation(value = "Search products by keywords!!")
     public ResponseEntity<PageableResponse<ProductDto>> search(
             @PathVariable String query,
             @RequestParam(value = "pageNumber", defaultValue = "1", required = false) int pageNumber,
@@ -104,6 +121,7 @@ public class ProductController {
     // Upload product image
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/image/{productId}")
+    @ApiOperation(value = "Upload products image  by productId || Only Admin can upload !!")
     public ResponseEntity<ImageResponse> uploadProductImage(
             @PathVariable String productId,
             @RequestParam("productImage") MultipartFile image
@@ -123,6 +141,7 @@ public class ProductController {
 
     //serve Product image
     @GetMapping(value = "/image/{productId}")
+    @ApiOperation(value = "Get Product image by productId !!")
     public void serveUserImage(@PathVariable String productId, HttpServletResponse response) throws IOException {
         ProductDto productDto = productService.get(productId);
         InputStream resource = fileService.getResource(imagePath, productDto.getProductImageName());

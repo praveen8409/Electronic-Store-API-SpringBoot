@@ -6,6 +6,10 @@ import com.lcwd.electronic.store.dtos.PageableResponse;
 import com.lcwd.electronic.store.dtos.UserDto;
 import com.lcwd.electronic.store.services.FileService;
 import com.lcwd.electronic.store.services.UserService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +28,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/users")
+@Api(value = "UserController", description = "REST APIs related to perform user operations !!")
+//@CrossOrigin("*")
 public class UserController {
 
     @Autowired
@@ -39,6 +45,12 @@ public class UserController {
 
     // Create
     @PostMapping
+    @ApiOperation(value = "create new user !!")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Success | OK"),
+            @ApiResponse(code = 401, message = "not authorized !!"),
+            @ApiResponse(code = 201, message = "new user created !!")
+    })
     public ResponseEntity<UserDto> createUser(@Valid @RequestBody UserDto userDto){
 
         UserDto userDto1 = userService.createUser(userDto);
@@ -47,6 +59,7 @@ public class UserController {
     }
     // update
     @PutMapping("/{userId}")
+    @ApiOperation(value = "Update single user details by userid !!")
     public ResponseEntity<UserDto> updateUser(@PathVariable("userId") String userId, @Valid @RequestBody UserDto userDto){
 
        UserDto userDto1 = userService.updateUser(userDto, userId);
@@ -56,6 +69,7 @@ public class UserController {
 
     // delete
     @DeleteMapping("/{userId}")
+    @ApiOperation(value = "Delete single user by userid !!")
     public ResponseEntity<ApiResponseMessage> deleteUser(@PathVariable("userId") String userId){
 
         userService.deleteUser(userId);
@@ -65,6 +79,7 @@ public class UserController {
 
     // Get all
     @GetMapping
+    @ApiOperation(value = "get all users", tags = {"user-controller"})
     public ResponseEntity<PageableResponse<UserDto>> getAllUsers(
             @RequestParam(value = "pageNumber", defaultValue = "0", required = false) int pageNumber,
             @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize,
@@ -79,6 +94,7 @@ public class UserController {
 
     // Get by id
     @GetMapping("/{userId}")
+    @ApiOperation(value = "Get single user by userid !!")
     public ResponseEntity<UserDto> getByUserId(@PathVariable("userId") String userId){
         UserDto userDto = userService.getUserById(userId);
         return new ResponseEntity<>(userDto,HttpStatus.OK);
@@ -87,6 +103,7 @@ public class UserController {
     // Get by email
 
     @GetMapping("/email/{email}")
+    @ApiOperation(value = "Get single user by Email !!")
     public ResponseEntity<UserDto> getByUserByEmail(@PathVariable("email") String email){
         UserDto userDto = userService.getUserByEmail(email);
         return new ResponseEntity<>(userDto,HttpStatus.OK);
@@ -94,6 +111,7 @@ public class UserController {
 
     // Search
     @GetMapping("/search/{keywords}")
+    @ApiOperation(value = "Get users by keyword !!")
     public ResponseEntity<List<UserDto>> searchByKeyword(@PathVariable("keywords") String keywords){
         List<UserDto> userDtos = userService.searchUsers(keywords);
         return new ResponseEntity<>(userDtos,HttpStatus.FOUND);
@@ -102,6 +120,7 @@ public class UserController {
     // Upload file
     //upload user image
     @PostMapping("/image/{userId}")
+    @ApiOperation(value = "Upload user pic by userId !!")
     public ResponseEntity<ImageResponse> uploadUserImage(@RequestParam("userImage") MultipartFile image, @PathVariable String userId) throws IOException {
         String imageName = fileService.uploadFile(image, imageUploadPath);
         UserDto user = userService.getUserById(userId);
@@ -114,6 +133,7 @@ public class UserController {
 
     //serve user image
     @GetMapping(value = "/image/{userId}")
+    @ApiOperation(value = "Serve user pic to user !!")
     public void serveUserImage(@PathVariable String userId, HttpServletResponse response) throws IOException {
         UserDto user = userService.getUserById(userId);
         logger.info("User image name : {} ", user.getImageName());

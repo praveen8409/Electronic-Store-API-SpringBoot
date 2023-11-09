@@ -11,6 +11,7 @@ import com.lcwd.electronic.store.entities.User;
 import com.lcwd.electronic.store.exceptions.BadApiRequestException;
 import com.lcwd.electronic.store.security.JwtHelper;
 import com.lcwd.electronic.store.services.UserService;
+import io.swagger.annotations.Api;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +34,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
+@Api(value = "AuthController", description = "REST APIs related to perform Authentications operations !!")
 public class AuthController {
 
     @Autowired
